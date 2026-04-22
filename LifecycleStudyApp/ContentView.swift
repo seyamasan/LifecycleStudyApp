@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -16,6 +18,18 @@ struct ContentView: View {
             Text("Hello, world!")
         }
         .padding()
+        .onChange(of: self.scenePhase) {
+            switch self.scenePhase {
+            case .inactive:
+                print("🟡 inactive")
+            case .active:
+                print("🟢 active")
+            case .background:
+                print("🔴 background")
+            @unknown default:
+                print("❓ unknown")
+            }
+        }
     }
 }
 
