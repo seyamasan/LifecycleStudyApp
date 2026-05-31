@@ -7,8 +7,11 @@
 
 class ContentModel {
     static func getData(count: Int) async throws -> Int {
-        // 約5秒でSuspededになるみたいなので、6秒delayかける
-        try await Task.sleep(for: .seconds(6))
+        // 約5秒でSuspededになるみたいなので、
+        // とりあえず、実験で20秒delayかける
+        try await Task.sleep(for: .seconds(20))
+        print("✅ delay完了")
+        
         return count + 1
     }
 }
