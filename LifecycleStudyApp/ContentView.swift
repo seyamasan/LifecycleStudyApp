@@ -11,27 +11,36 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var resultText: String? = nil
     @State private var resultCount: Int = 0
+    @State private var isLoading: Bool = false
     
     var body: some View {
         VStack {
-            Button(action: {
-                Task {
-                    do {
-                        resultCount = try await ContentModel.getData(count: resultCount)
-                        resultText = "\(resultCount)回データを取得できました。"
-                    } catch {
-                        resultText = error.localizedDescription
+            if isLoading {
+                ProgressView()
+            } else {
+                Button(action: {
+                    isLoading = true
+                    
+                    Task {
+                        do {
+                            resultCount = try await ContentModel.getData(count: resultCount)
+                            resultText = "\(resultCount)回データを取得できました。"
+                        } catch {
+                            resultText = error.localizedDescription
+                        }
+                        
+                        isLoading = false
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "network")
+                        Text("非同期処理を開始")
                     }
                 }
-            }) {
-                HStack {
-                    Image(systemName: "network")
-                    Text("非同期処理を開始")
-                }
+                .buttonStyle(.borderedProminent)
+                
+                Text(resultText ?? "処理結果はここに表示されます。")
             }
-            .buttonStyle(.borderedProminent)
-            
-            Text(resultText ?? "処理結果はここに表示されます。")
         }
         .padding()
         .onChange(of: self.scenePhase) {
