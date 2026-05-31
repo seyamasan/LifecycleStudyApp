@@ -6,9 +6,9 @@
 //
 
 class ContentModel {
-    static func getData() async throws -> String {
+    static func getData(count: Int) async throws -> Int {
         // 約5秒でSuspededになるみたいなので、6秒delayかける
         try await Task.sleep(for: .seconds(6))
-        return "データを取得できました。"
+        return count + 1
     }
 }
