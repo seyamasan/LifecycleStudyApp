@@ -9,13 +9,29 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
+    @State private var resultText: String? = nil
+    @State private var resultCount: Int = 0
     
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Button(action: {
+                Task {
+                    do {
+                        resultCount = try await ContentModel.getData(count: resultCount)
+                        resultText = "\(resultCount)回データを取得できました。"
+                    } catch {
+                        resultText = error.localizedDescription
+                    }
+                }
+            }) {
+                HStack {
+                    Image(systemName: "network")
+                    Text("非同期処理を開始")
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            
+            Text(resultText ?? "処理結果はここに表示されます。")
         }
         .padding()
         .onChange(of: self.scenePhase) {
